@@ -6,6 +6,12 @@ maxPulos = 3,
 velocidade = 6, 
 estadoAtual, 
 record,
+fps, 
+fpsInterval, 
+startTime, 
+now, 
+then, 
+elapsed,
 
 estados = {
 	jogar: 0,
@@ -132,12 +138,15 @@ obstaculos = {
 };
 
 window.onload = function(){
-	main();
+	main(60);
 }
 
-function main(){
+function main(fps){
 	ALTURA = window.innerHeight;
 	LARGURA = window.innerWidth;
+	fpsInterval = 1000 / fps;
+    then = Date.now();
+    startTime = then;   
 	
 	if(LARGURA >= 500)
 		LARGURA = ALTURA = 600;
@@ -158,14 +167,22 @@ function main(){
 }
 
 function roda(){
-	record = localStorage.getItem("record");
-	
-	if(record == null)
-		record = 0;
-
-	atualiza();
-	desenha();	
 	window.requestAnimationFrame(roda);
+
+	now = Date.now();
+    elapsed = now - then;
+
+    if (elapsed > fpsInterval) {
+        then = now - (elapsed % fpsInterval);
+
+		record = localStorage.getItem("record");
+
+		if(record == null)
+			record = 0;
+		
+		atualiza();
+		desenha();
+    }
 }
 
 function clique(e){
